@@ -6,7 +6,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "間違い博物館",
+  title: "ミスミサダメ",
   description: "学習のミスを追跡し、改善につなげるアプリケーション",
 };
 
