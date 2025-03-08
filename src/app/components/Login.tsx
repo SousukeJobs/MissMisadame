@@ -103,8 +103,8 @@ export default function Login() {
           <button
             type="button"
             onClick={() => setIsLogin(!isLogin)}
-            className="text-sm text-gray"
-            style={{ textDecoration: 'underline' }}
+            className="btn-primary"
+            style={{ width: '50%' }}
           >
             {isLogin ? 'アカウントを作成' : 'ログインに戻る'}
           </button>

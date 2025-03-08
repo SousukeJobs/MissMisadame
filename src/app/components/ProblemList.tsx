@@ -23,24 +23,32 @@ export default function ProblemList() {
 
   const fetchProblems = async () => {
     try {
-      if (!token) {
+      const currentToken = token;
+      if (!currentToken) {
         console.error('トークンがありません');
         setProblems([]);
         return;
       }
 
-      console.log('Token:', token);
+      console.log('Token:', currentToken);
       console.log('Request URL:', 'http://localhost:5001/api/problems');
       
       const response = await fetch('http://localhost:5001/api/problems', {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${currentToken}`,
           'Content-Type': 'application/json'
-        }
+        },
+        credentials: 'include'
       });
 
       console.log('Response status:', response.status);
       console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
+      if (response.status === 401) {
+        console.error('認証エラー: トークンが無効または期限切れです');
+        setProblems([]);
+        return;
+      }
 
       if (!response.ok) {
         const errorData = await response.json();

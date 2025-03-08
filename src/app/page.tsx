@@ -8,10 +8,11 @@ import ProblemList from './components/ProblemList';
 import Statistics from './components/Statistics';
 import Profile from './components/Profile';
 import ProblemSearch from './components/ProblemSearch';
+import Review from './components/Review';
 
 export default function Home() {
   const { isAuthenticated, username, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<'form' | 'list' | 'search' | 'stats' | 'profile'>('form');
+  const [activeTab, setActiveTab] = useState<'form' | 'list' | 'search' | 'stats' | 'profile' | 'review'>('form');
 
   if (!isAuthenticated()) {
     return <Login />;
@@ -19,41 +20,51 @@ export default function Home() {
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">間違い博物館へようこそ、{username}さん</h1>
+      <div className="header-section">
+        <h1 className="header-title">
+          <span>ようこそ、</span>
+          <span>{username}</span>
+          <span>さん</span>
+        </h1>
         <button onClick={logout} className="btn-secondary">
           ログアウト
         </button>
       </div>
 
       <div className="mb-8">
-        <div className="flex space-x-4 border-b">
+        <div className="tab-navigation">
           <button
-            className={`py-2 px-4 ${activeTab === 'form' ? 'border-b-2 border-primary font-medium' : ''}`}
+            className={`tab-button ${activeTab === 'form' ? 'active' : ''}`}
             onClick={() => setActiveTab('form')}
           >
             問題を登録
           </button>
           <button
-            className={`py-2 px-4 ${activeTab === 'list' ? 'border-b-2 border-primary font-medium' : ''}`}
+            className={`tab-button ${activeTab === 'list' ? 'active' : ''}`}
             onClick={() => setActiveTab('list')}
           >
-            問題一覧
+            間違い博物館
           </button>
           <button
-            className={`py-2 px-4 ${activeTab === 'search' ? 'border-b-2 border-primary font-medium' : ''}`}
+            className={`tab-button ${activeTab === 'search' ? 'active' : ''}`}
             onClick={() => setActiveTab('search')}
           >
             問題を検索
           </button>
           <button
-            className={`py-2 px-4 ${activeTab === 'stats' ? 'border-b-2 border-primary font-medium' : ''}`}
+            className={`tab-button ${activeTab === 'review' ? 'active' : ''}`}
+            onClick={() => setActiveTab('review')}
+          >
+            復習
+          </button>
+          <button
+            className={`tab-button ${activeTab === 'stats' ? 'active' : ''}`}
             onClick={() => setActiveTab('stats')}
           >
             統計
           </button>
           <button
-            className={`py-2 px-4 ${activeTab === 'profile' ? 'border-b-2 border-primary font-medium' : ''}`}
+            className={`tab-button ${activeTab === 'profile' ? 'active' : ''}`}
             onClick={() => setActiveTab('profile')}
           >
             プロフィール
@@ -65,6 +76,7 @@ export default function Home() {
         {activeTab === 'form' && <ProblemForm />}
         {activeTab === 'list' && <ProblemList />}
         {activeTab === 'search' && <ProblemSearch />}
+        {activeTab === 'review' && <Review />}
         {activeTab === 'stats' && <Statistics />}
         {activeTab === 'profile' && <Profile />}
       </div>

@@ -21,9 +21,15 @@ app.debug = True
 # シークレットキーの設定
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default-secret-key')
 
-# シンプルなCORS設定
-app.config['CORS_HEADERS'] = 'Content-Type'
-CORS(app)
+# CORS設定
+CORS(app, resources={
+    r"/*": {
+        "origins": ["http://localhost:3000", "http://127.0.0.1:3000"],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
+    }
+})
 
 # エラーハンドラー
 @app.errorhandler(Exception)

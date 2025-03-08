@@ -21,7 +21,7 @@ export default function RootLayout({
         <AuthProvider>
           <nav className="nav">
             <div className="container nav-content">
-              <div className="nav-title">間違い博物館</div>
+              <div className="nav-title">ミスミサダメ</div>
             </div>
           </nav>
           <main className="container" style={{ paddingTop: '1.5rem', paddingBottom: '1.5rem' }}>

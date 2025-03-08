@@ -260,3 +260,34 @@ def search_problems(current_user):
         'mistake_type': p.mistake_type,
         'created_at': p.created_at.isoformat()
     } for p in problems])
+
+# ランダムな問題を取得
+@app.route('/api/problems/random', methods=['GET'])
+@token_required
+def get_random_problem(current_user):
+    problem = Problem.query.filter_by(user_id=current_user.id).order_by(db.func.random()).first()
+    
+    if not problem:
+        return jsonify({'message': '問題が登録されていません'}), 404
+        
+    return jsonify({
+        'id': problem.id,
+        'question': problem.question,
+        'created_at': problem.created_at.isoformat()
+    })
+
+# 解答を検証
+@app.route('/api/problems/verify/<int:id>', methods=['POST'])
+@token_required
+def verify_answer(current_user, id):
+    problem = Problem.query.filter_by(id=id, user_id=current_user.id).first_or_404()
+    data = request.json
+    user_answer = data.get('answer', '').strip()
+    
+    is_correct = user_answer == problem.answer.strip()
+    
+    return jsonify({
+        'is_correct': is_correct,
+        'correct_answer': problem.answer if not is_correct else None,
+        'message': '正解！' if is_correct else f'不正解。正解は「{problem.answer}」です。'
+    })

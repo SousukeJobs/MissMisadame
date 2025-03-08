@@ -94,7 +94,7 @@ export default function ProblemForm() {
 
       <div>
         <label htmlFor="answer" className="text-sm font-medium">
-          解答
+          正しい解答
         </label>
         <textarea
           id="answer"

@@ -14,6 +14,7 @@ interface AuthContextType {
   logout: () => void;
   isAuthenticated: () => boolean;
   updateProfile: (user: User) => void;
+  getToken: () => string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,21 +23,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
 
+  const checkTokenExpiration = (token: string) => {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.exp * 1000 < Date.now()) {
+        logout();
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.error('トークンの検証中にエラーが発生しました:', error);
+      logout();
+      return false;
+    }
+  };
+
   useEffect(() => {
     // ローカルストレージから認証情報を復元
     const storedToken = localStorage.getItem('token');
     const storedUsername = localStorage.getItem('username');
     if (storedToken && storedUsername) {
-      setToken(storedToken);
-      setUsername(storedUsername);
+      if (checkTokenExpiration(storedToken)) {
+        setToken(storedToken);
+        setUsername(storedUsername);
+      }
     }
   }, []);
 
   const login = (newToken: string, newUsername: string) => {
-    setToken(newToken);
-    setUsername(newUsername);
-    localStorage.setItem('token', newToken);
-    localStorage.setItem('username', newUsername);
+    if (checkTokenExpiration(newToken)) {
+      setToken(newToken);
+      setUsername(newUsername);
+      localStorage.setItem('token', newToken);
+      localStorage.setItem('username', newUsername);
+    }
   };
 
   const logout = () => {
@@ -47,7 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const isAuthenticated = () => {
-    return !!token;
+    return !!token && checkTokenExpiration(token);
   };
 
   const updateProfile = (user: User) => {
@@ -55,8 +75,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('username', user.username);
   };
 
+  const getToken = () => {
+    if (token && checkTokenExpiration(token)) {
+      return token;
+    }
+    return null;
+  };
+
   return (
-    <AuthContext.Provider value={{ token, username, login, logout, isAuthenticated, updateProfile }}>
+    <AuthContext.Provider value={{ 
+      token, 
+      username, 
+      login, 
+      logout, 
+      isAuthenticated, 
+      updateProfile,
+      getToken 
+    }}>
       {children}
     </AuthContext.Provider>
   );
