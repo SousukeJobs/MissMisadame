@@ -407,3 +407,26 @@ tr:hover {
     font-size: 0.875rem;
   }
 }
+
+.daily-quote {
+  font-size: 0.9rem;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 600px;
+}
+
+@media (max-width: 768px) {
+  .daily-quote {
+    max-width: 300px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .daily-quote {
+    max-width: 200px;
+    font-size: 0.75rem;
+  }
+}
