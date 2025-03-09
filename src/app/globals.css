@@ -126,11 +126,17 @@ body {
 }
 
 .nav-title {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 700;
   background: linear-gradient(to right, var(--primary-color), var(--primary-hover));
   -webkit-background-clip: text;
   color: transparent;
+}
+
+.adobe-fonts {
+  font-family: "vdl-logog", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
 .tab-container {
@@ -409,12 +415,22 @@ tr:hover {
 }
 
 .daily-quote {
-  font-size: 0.9rem;
-  color: #666;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 600px;
+  display: flex;
+}
+.daily-quote-title {
+  font-size: 0.9rem;
+  color: #64748b;
+  font-size: 1rem;
+}
+.daily-quote-text {
+  font-size: 0.9rem;
+  color: var(--primary-color);
+  font-size: 1rem;
+  font-weight: bold;
 }
 
 @media (max-width: 768px) {
@@ -428,5 +444,35 @@ tr:hover {
   .daily-quote {
     max-width: 200px;
     font-size: 0.75rem;
+  }
+}
+
+/* 目のスタイル */
+.eye {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid black;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pupil {
+  width: 8px;
+  height: 8px;
+  background: black;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pupil {
+    transition: none;
   }
 }
