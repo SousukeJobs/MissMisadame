@@ -3,7 +3,11 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 
-export default function Profile() {
+interface ProfileProps {
+  onLogout?: () => void;
+}
+
+export default function Profile({ onLogout }: ProfileProps) {
   const { token, username: currentUsername, updateProfile } = useAuth();
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [profileData, setProfileData] = useState({
@@ -122,7 +126,7 @@ export default function Profile() {
         </button>
       </form>
 
-      <div className="mt-8">
+      <div className="profile-actions">
         <button
           onClick={() => setIsChangingPassword(!isChangingPassword)}
           className="btn-secondary"
@@ -130,56 +134,62 @@ export default function Profile() {
           {isChangingPassword ? 'パスワード変更をキャンセル' : 'パスワードを変更'}
         </button>
 
-        {isChangingPassword && (
-          <form onSubmit={handlePasswordSubmit} className="mt-4 space-y">
-            <div>
-              <label htmlFor="currentPassword" className="text-sm font-medium">
-                現在のパスワード
-              </label>
-              <input
-                type="password"
-                id="currentPassword"
-                className="input-field"
-                value={passwordData.currentPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="newPassword" className="text-sm font-medium">
-                新しいパスワード
-              </label>
-              <input
-                type="password"
-                id="newPassword"
-                className="input-field"
-                value={passwordData.newPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="confirmPassword" className="text-sm font-medium">
-                新しいパスワード（確認）
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                className="input-field"
-                value={passwordData.confirmPassword}
-                onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                required
-              />
-            </div>
-
-            <button type="submit" className="btn-primary">
-              パスワードを変更
-            </button>
-          </form>
+        {onLogout && (
+          <button onClick={onLogout} className="btn-danger">
+            ログアウト
+          </button>
         )}
       </div>
+
+      {isChangingPassword && (
+        <form onSubmit={handlePasswordSubmit} className="mt-4 space-y">
+          <div>
+            <label htmlFor="currentPassword" className="text-sm font-medium">
+              現在のパスワード
+            </label>
+            <input
+              type="password"
+              id="currentPassword"
+              className="input-field"
+              value={passwordData.currentPassword}
+              onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="newPassword" className="text-sm font-medium">
+              新しいパスワード
+            </label>
+            <input
+              type="password"
+              id="newPassword"
+              className="input-field"
+              value={passwordData.newPassword}
+              onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="confirmPassword" className="text-sm font-medium">
+              新しいパスワード（確認）
+            </label>
+            <input
+              type="password"
+              id="confirmPassword"
+              className="input-field"
+              value={passwordData.confirmPassword}
+              onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
+              required
+            />
+          </div>
+
+          <button type="submit" className="btn-primary">
+            パスワードを変更
+          </button>
+        </form>
+      )}
     </div>
   );
 } 

@@ -9,14 +9,24 @@ import Statistics from './components/Statistics';
 import Profile from './components/Profile';
 import ProblemSearch from './components/ProblemSearch';
 import Review from './components/Review';
+import { FiPlusCircle, FiArchive, FiSearch, FiRepeat, FiBarChart2, FiUser } from 'react-icons/fi';
 
 export default function Home() {
   const { isAuthenticated, username, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<'form' | 'list' | 'search' | 'stats' | 'profile' | 'review'>('form');
+  const [activeTab, setActiveTab] = useState<'form' | 'list' | 'search' | 'stats' | 'profile' | 'review'>('list');
 
   if (!isAuthenticated()) {
     return <Login />;
   }
+
+  const tabConfig = [
+    { id: 'list', label: '間違い博物館', icon: <FiArchive /> },
+    { id: 'form', label: '問題を登録', icon: <FiPlusCircle /> },
+    { id: 'search', label: '問題を検索', icon: <FiSearch /> },
+    { id: 'review', label: '復習', icon: <FiRepeat /> },
+    { id: 'stats', label: '統計', icon: <FiBarChart2 /> },
+    { id: 'profile', label: 'プロフィール', icon: <FiUser /> }
+  ];
 
   return (
     <main className="container mx-auto px-4 py-8">
@@ -26,59 +36,36 @@ export default function Home() {
           <span>{username}</span>
           <span>さん</span>
         </h1>
-        <button onClick={logout} className="btn-secondary">
+        {/* <button onClick={logout} className="btn-secondary">
           ログアウト
-        </button>
+        </button> */}
+        <br />
+        <br />
+        
       </div>
 
       <div className="mb-8">
-        <div className="tab-navigation">
-          <button
-            className={`tab-button ${activeTab === 'form' ? 'active' : ''}`}
-            onClick={() => setActiveTab('form')}
-          >
-            問題を登録
-          </button>
-          <button
-            className={`tab-button ${activeTab === 'list' ? 'active' : ''}`}
-            onClick={() => setActiveTab('list')}
-          >
-            間違い博物館
-          </button>
-          <button
-            className={`tab-button ${activeTab === 'search' ? 'active' : ''}`}
-            onClick={() => setActiveTab('search')}
-          >
-            問題を検索
-          </button>
-          <button
-            className={`tab-button ${activeTab === 'review' ? 'active' : ''}`}
-            onClick={() => setActiveTab('review')}
-          >
-            復習
-          </button>
-          <button
-            className={`tab-button ${activeTab === 'stats' ? 'active' : ''}`}
-            onClick={() => setActiveTab('stats')}
-          >
-            統計
-          </button>
-          <button
-            className={`tab-button ${activeTab === 'profile' ? 'active' : ''}`}
-            onClick={() => setActiveTab('profile')}
-          >
-            プロフィール
-          </button>
-        </div>
+        <nav className="tab-navigation">
+          {tabConfig.map((tab) => (
+            <button
+              key={tab.id}
+              className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
+              onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            >
+              {tab.icon}
+              <span>{tab.label}</span>
+            </button>
+          ))}
+        </nav>
       </div>
 
-      <div className="mt-8">
+      <div className="content-area">
         {activeTab === 'form' && <ProblemForm />}
         {activeTab === 'list' && <ProblemList />}
         {activeTab === 'search' && <ProblemSearch />}
         {activeTab === 'review' && <Review />}
         {activeTab === 'stats' && <Statistics />}
-        {activeTab === 'profile' && <Profile />}
+        {activeTab === 'profile' && <Profile onLogout={logout} />}
       </div>
     </main>
   );

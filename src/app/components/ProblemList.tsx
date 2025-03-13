@@ -12,10 +12,52 @@ interface Problem {
   created_at: string;
 }
 
+interface ProblemModalProps {
+  problem: Problem;
+  onClose: () => void;
+}
+
+const ProblemModal = ({ problem, onClose }: ProblemModalProps) => {
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={e => e.stopPropagation()}>
+        <h3 className="modal-title">問題の詳細</h3>
+        <div className="modal-body">
+          <div className="modal-field">
+            <h4>問題文</h4>
+            <p>{problem.question}</p>
+          </div>
+          <div className="modal-field">
+            <h4>解答</h4>
+            <p>{problem.answer}</p>
+          </div>
+          <div className="modal-field">
+            <h4>ミスした理由</h4>
+            <p>{problem.mistake_reason}</p>
+          </div>
+          <div className="modal-field">
+            <h4>ミスの種類</h4>
+            <p>{problem.mistake_type}</p>
+          </div>
+          <div className="modal-field">
+            <h4>登録日時</h4>
+            <p>{new Date(problem.created_at).toLocaleString('ja-JP')}</p>
+          </div>
+        </div>
+        <button onClick={onClose} className="modal-close">
+          閉じる
+        </button>
+      </div>
+    </div>
+  );
+};
+
 export default function ProblemList() {
   const { token } = useAuth();
   const [problems, setProblems] = useState<Problem[]>([]);
   const [selectedProblem, setSelectedProblem] = useState<Problem | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const problemsPerPage = 9;
 
   useEffect(() => {
     fetchProblems();
@@ -30,9 +72,6 @@ export default function ProblemList() {
         return;
       }
 
-      console.log('Token:', currentToken);
-      console.log('Request URL:', 'http://localhost:5001/api/problems');
-      
       const response = await fetch('http://localhost:5001/api/problems', {
         headers: {
           'Authorization': `Bearer ${currentToken}`,
@@ -40,9 +79,6 @@ export default function ProblemList() {
         },
         credentials: 'include'
       });
-
-      console.log('Response status:', response.status);
-      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
 
       if (response.status === 401) {
         console.error('認証エラー: トークンが無効または期限切れです');
@@ -58,9 +94,6 @@ export default function ProblemList() {
       }
 
       const data = await response.json();
-      console.log('Response data:', data);
-      
-      // レスポンスデータの形式をチェック
       if (Array.isArray(data)) {
         setProblems(data);
       } else if (data.problems && Array.isArray(data.problems)) {
@@ -71,13 +104,6 @@ export default function ProblemList() {
       }
     } catch (error: unknown) {
       console.error('Error fetching problems:', error);
-      if (error instanceof Error) {
-        console.error('Error details:', {
-          name: error.name,
-          message: error.message,
-          stack: error.stack
-        });
-      }
       setProblems([]);
     }
   };
@@ -105,78 +131,75 @@ export default function ProblemList() {
     }
   };
 
-  return (
-    <div className="space-y">
-      <div className="grid grid-cols-2" style={{ gap: '2rem' }}>
-        <div className="space-y">
-          <h2 className="font-semibold" style={{ fontSize: '1.125rem' }}>問題一覧</h2>
-          <div className="space-y">
-            {problems.map((problem) => (
-              <div
-                key={problem.id}
-                className="card"
-                style={{
-                  cursor: 'pointer',
-                  border: selectedProblem?.id === problem.id ? '2px solid var(--primary-color)' : 'none'
-                }}
-                onClick={() => setSelectedProblem(problem)}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <div style={{ flex: 1 }}>
-                    <p className="font-medium" style={{ marginBottom: '0.5rem' }}>{problem.question}</p>
-                    <p className="text-sm text-gray">
-                      ミスの種類: {problem.mistake_type}
-                    </p>
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(problem.id);
-                    }}
-                    className="delete-btn"
-                  >
-                    削除
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+  // ページネーション用の計算
+  const indexOfLastProblem = currentPage * problemsPerPage;
+  const indexOfFirstProblem = indexOfLastProblem - problemsPerPage;
+  const currentProblems = problems.slice(indexOfFirstProblem, indexOfLastProblem);
+  const totalPages = Math.ceil(problems.length / problemsPerPage);
 
-        <div className="space-y">
-          <h2 className="font-semibold" style={{ fontSize: '1.125rem' }}>問題の詳細</h2>
-          {selectedProblem ? (
-            <div className="card space-y">
-              <div>
-                <h3 className="text-sm font-medium">問題文</h3>
-                <p style={{ marginTop: '0.25rem' }}>{selectedProblem.question}</p>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium">解答</h3>
-                <p style={{ marginTop: '0.25rem' }}>{selectedProblem.answer}</p>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium">ミスした理由</h3>
-                <p style={{ marginTop: '0.25rem' }}>{selectedProblem.mistake_reason}</p>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium">ミスの種類</h3>
-                <p style={{ marginTop: '0.25rem' }}>{selectedProblem.mistake_type}</p>
-              </div>
-              <div>
-                <h3 className="text-sm font-medium">登録日時</h3>
-                <p style={{ marginTop: '0.25rem' }}>
-                  {new Date(selectedProblem.created_at).toLocaleString('ja-JP')}
-                </p>
-              </div>
+  return (
+    <div className="container">
+      <div className="problem-grid">
+        {currentProblems.map((problem) => (
+          <div key={problem.id} className="problem-card">
+            <h3 className="problem-title">{problem.question}</h3>
+            <div className="problem-info">
+              <p className="problem-type">
+                ミスの種類: {problem.mistake_type}
+              </p>
+              <p className="problem-date">
+                {new Date(problem.created_at).toLocaleDateString('ja-JP')}
+              </p>
             </div>
-          ) : (
-            <div className="card">
-              <p className="text-gray">問題を選択してください</p>
+            <div className="problem-actions">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(problem.id);
+                }}
+                className="delete-button"
+              >
+                削除
+              </button>
+              <button
+                onClick={() => setSelectedProblem(problem)}
+                className="view-button"
+              >
+                詳細
+              </button>
             </div>
-          )}
-        </div>
+          </div>
+        ))}
       </div>
+
+      {/* ページネーション */}
+      <div className="pagination">
+        <button
+          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="pagination-button"
+        >
+          前へ
+        </button>
+        <span className="pagination-info">
+          {currentPage} / {totalPages}
+        </span>
+        <button
+          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+          className="pagination-button"
+        >
+          次へ
+        </button>
+      </div>
+
+      {/* モーダル */}
+      {selectedProblem && (
+        <ProblemModal
+          problem={selectedProblem}
+          onClose={() => setSelectedProblem(null)}
+        />
+      )}
     </div>
   );
 } 
