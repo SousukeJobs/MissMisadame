@@ -79,6 +79,7 @@ export default function ProblemForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y">
       <div>
+      <h2 className="text-2xl font-bold">問題を登録</h2>
         <label htmlFor="question" className="text-sm font-medium">
           問題文
         </label>

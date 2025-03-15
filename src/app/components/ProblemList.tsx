@@ -17,6 +17,8 @@ interface ProblemModalProps {
   onClose: () => void;
 }
 
+
+
 const ProblemModal = ({ problem, onClose }: ProblemModalProps) => {
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -108,6 +110,8 @@ export default function ProblemList() {
     }
   };
 
+
+  
   const handleDelete = async (id: number) => {
     if (!confirm('この問題を削除してもよろしいですか？')) return;
 
@@ -139,6 +143,7 @@ export default function ProblemList() {
 
   return (
     <div className="container">
+      <h2 className="text-2xl font-bold">間違い博物館</h2>
       <div className="problem-grid">
         {currentProblems.map((problem) => (
           <div key={problem.id} className="problem-card">

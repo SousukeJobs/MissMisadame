@@ -70,6 +70,7 @@ export default function ProblemSearch() {
 
   return (
     <div className="space-y">
+      <h2 className="text-2xl font-bold">検索</h2>
       <form onSubmit={handleSearch} className="space-y">
         <div>
           <label htmlFor="query" className="text-sm font-medium">
