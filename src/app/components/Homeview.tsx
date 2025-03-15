@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import QuoteDisplay from '@/components/QuoteDisplay';
+import QuoteDisplay from '../../../src/components/QuoteDisplay';
 import { useAuth } from '../contexts/AuthContext';
 import { FiPlusCircle, FiRepeat, FiBarChart2 } from 'react-icons/fi';
 import axios from 'axios';

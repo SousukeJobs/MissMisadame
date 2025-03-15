@@ -3,8 +3,8 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "./contexts/AuthContext";
-import QuoteDisplay from '@/components/QuoteDisplay';
-import Eye from '@/components/Eye';
+import QuoteDisplay from '../../src/components/QuoteDisplay';
+import Eye from '../../src/components/Eye';
 import Script from 'next/script';
 
 const inter = Inter({
