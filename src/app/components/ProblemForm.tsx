@@ -35,9 +35,9 @@ export default function ProblemForm() {
     try {
       console.log('Token:', token);
       console.log('Sending data to API:', formData);
-      console.log('Request URL:', 'http://localhost:5001/api/problems');
+      console.log('Request URL:', `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/problems`);
       
-      const response = await fetch('http://localhost:5001/api/problems', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/problems`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

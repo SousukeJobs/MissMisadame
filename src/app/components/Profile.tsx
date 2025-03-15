@@ -24,7 +24,7 @@ export default function Profile({ onLogout }: ProfileProps) {
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5001/api/auth/profile', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/auth/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export default function Profile({ onLogout }: ProfileProps) {
     }
 
     try {
-      const response = await fetch('http://localhost:5001/api/auth/change-password', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/auth/change-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -27,7 +27,7 @@ export default function Statistics() {
 
   const fetchStatistics = async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/statistics', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/statistics`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

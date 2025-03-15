@@ -20,7 +20,7 @@ const Home = ({ setActiveTab }: HomeviewProps): React.ReactNode => {
       if (!token) return;
       
       try {
-        const response = await axios.get('http://localhost:5001/api/problems', {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/problems`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }

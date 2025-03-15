@@ -74,7 +74,7 @@ export default function ProblemList() {
         return;
       }
 
-      const response = await fetch('http://localhost:5001/api/problems', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/problems`, {
         headers: {
           'Authorization': `Bearer ${currentToken}`,
           'Content-Type': 'application/json'
@@ -116,7 +116,7 @@ export default function ProblemList() {
     if (!confirm('この問題を削除してもよろしいですか？')) return;
 
     try {
-      const response = await fetch(`http://localhost:5001/api/problems/${id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001'}/api/problems/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
