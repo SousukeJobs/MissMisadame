@@ -15,8 +15,8 @@ load_dotenv()
 # Flaskアプリケーションの初期化
 app = Flask(__name__)
 
-# デバッグモードを有効化
-app.debug = True
+# デバッグモードを有効化（本番環境では無効）
+app.debug = os.environ.get('FLASK_ENV') == 'development'
 
 # シークレットキーの設定
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default-secret-key')
@@ -24,7 +24,12 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default-secret-key')
 # CORS設定
 CORS(app, resources={
     r"/*": {
-        "origins": ["http://localhost:3000", "http://127.0.0.1:3000"],
+        "origins": [
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            "https://miss-misadame.onrender.com",
+            os.environ.get('FRONTEND_URL', '')
+        ],
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
         "supports_credentials": True

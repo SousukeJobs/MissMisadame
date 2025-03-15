@@ -7,7 +7,10 @@ import QuoteDisplay from '@/components/QuoteDisplay';
 import Eye from '@/components/Eye';
 import Script from 'next/script';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export default function RootLayout({
   children,
@@ -15,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="ja">
+    <html lang="ja" className={inter.className}>
       <head>
         <Script id="adobe-fonts" strategy="afterInteractive">
           {`
@@ -30,7 +33,7 @@ export default function RootLayout({
           `}
         </Script>
       </head>
-      <body className={inter.className}>
+      <body>
         <AuthProvider>
           <nav className="nav">
             <div className="container nav-content">
