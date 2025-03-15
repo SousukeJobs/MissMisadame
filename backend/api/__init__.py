@@ -16,7 +16,7 @@ load_dotenv()
 app = Flask(__name__)
 
 # デバッグモードを有効化（本番環境では無効）
-app.debug = os.environ.get('FLASK_ENV') == 'development'
+app.debug = True  # デバッグを強制的に有効化
 
 # シークレットキーの設定
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default-secret-key')
@@ -24,23 +24,39 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default-secret-key')
 # CORS設定
 CORS(app, resources={
     r"/*": {
-        "origins": [
-            "http://localhost:3000",
-            "http://127.0.0.1:3000",
-            "https://miss-misadame.onrender.com",
-            os.environ.get('FRONTEND_URL', '')
-        ],
+        "origins": "*",  # 一時的にすべてのオリジンを許可
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
         "supports_credentials": True
     }
 })
 
+# 利用可能なルートを表示
+@app.route('/')
+def list_routes():
+    routes = []
+    for rule in app.url_map.iter_rules():
+        routes.append({
+            'endpoint': rule.endpoint,
+            'methods': list(rule.methods),
+            'path': str(rule)
+        })
+    return jsonify(routes)
+
 # エラーハンドラー
+@app.errorhandler(404)
+def not_found_error(error):
+    logger.error(f"404 Error: {request.url}")
+    logger.error(f"Method: {request.method}")
+    logger.error(f"Headers: {dict(request.headers)}")
+    return jsonify({"error": "Not Found", "path": request.path}), 404
+
 @app.errorhandler(Exception)
 def handle_error(error):
     logger.error(f"An error occurred: {str(error)}")
     logger.error(f"Error type: {type(error)}")
+    logger.error(f"URL: {request.url}")
+    logger.error(f"Method: {request.method}")
     return jsonify({"error": str(error)}), 500
 
 # リクエストのログを記録
