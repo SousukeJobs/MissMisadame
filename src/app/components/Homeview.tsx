@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import QuoteDisplay from '@/components/QuoteDisplay';
 import { useAuth } from '../contexts/AuthContext';
-import { FiPlusCircle, FiArchive, FiSearch, FiRepeat, FiBarChart2, FiUser, FiHome } from 'react-icons/fi';
+import { FiPlusCircle, FiRepeat, FiBarChart2 } from 'react-icons/fi';
 import axios from 'axios';
 import { ImLibrary } from "react-icons/im";
 
